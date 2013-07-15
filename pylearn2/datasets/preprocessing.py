@@ -131,7 +131,7 @@ class Pipeline(Preprocessor):
     def __init__(self, items=None):
         self.items = items if items is not None else []
 
-    def apply(self, dataset, can_fit=False):
+    def apply(self, dataset, can_fit=True):
         for item in self.items:
             item.apply(dataset, can_fit)
 
