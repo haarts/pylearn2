@@ -1,0 +1,28 @@
+!obj:pylearn2.train.Train {
+    "dataset": !obj:pylearn2.datasets.cifar10.CIFAR10 &dataset {
+        "which_set" : 'train',
+        toronto_prepro: True
+    },
+    "model": !obj:pylearn2.models.autoencoder.DenoisingAutoencoder {
+        "nvis" : 3072,
+        "nhid" : 4000,
+        "irange" : 0.05,
+        "corruptor": !obj:pylearn2.corruption.BinomialCorruptor {
+            "corruption_level": 0.5,
+        },
+        "act_enc": "sigmoid",
+        "act_dec": null,    # Linear activation on the decoder side.
+    },
+    "algorithm": !obj:pylearn2.training_algorithms.sgd.SGD {
+        "learning_rate" : 1e-2,
+        "batch_size" : 10,
+        "monitoring_batches" : 5,
+        "monitoring_dataset" : *dataset,
+        "cost" : !obj:pylearn2.costs.autoencoder.MeanSquaredReconstructionError {},
+        "termination_criterion" : !obj:pylearn2.training_algorithms.sgd.EpochCounter {
+            "max_epochs": 25,
+        },
+    },
+    "save_path": "./dae_cifar_sigm.pkl",
+    save_freq: 1
+}
