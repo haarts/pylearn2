@@ -12,18 +12,16 @@
             ]
         }
     },
-    "model": !obj:pylearn2.models.autoencoder.DenoisingAutoencoder {
+    "model": !obj:pylearn2.models.autoencoder.Autoencoder {
         "nvis" : 192,
-        "nhid" : 800,
+        "nhid" : 100,
+        "irange" : 0.05,
         "tied_weights": True,
-        "corruptor": !obj:pylearn2.corruption.BinomialCorruptor {
-            "corruption_level": 0.5,
-        },
         "act_enc": "sigmoid",
         "act_dec": null,    # Linear activation on the decoder side.
     },
     "algorithm": !obj:pylearn2.training_algorithms.sgd.SGD {
-        "learning_rate" : 1e-3,
+        "learning_rate" : 1e-2,
         "batch_size" : 10,
         "monitoring_batches" : 5,
         "monitoring_dataset" : *dataset,
@@ -32,6 +30,6 @@
             "max_epochs": 40,
         },
     },
-    "save_path": "./dae_cifar_8x8_std_zca_sigm_1e-3_no_irange.pkl",
+    "save_path": "./ae_cifar_8x8_std_zca_sigm_1e-2.pkl",
     save_freq: 1
 }
