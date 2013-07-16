@@ -4,7 +4,7 @@
         preprocessor: !obj:pylearn2.datasets.preprocessing.Pipeline {
           items: [
             !obj:pylearn2.datasets.preprocessing.ExtractPatches {
-              patch_shape: [8,8],
+              patch_shape: [12,12],
               num_patches: 100000
             },
             !obj:pylearn2.datasets.preprocessing.Standardize { },
@@ -13,8 +13,8 @@
         }
     },
     "model": !obj:pylearn2.models.autoencoder.DenoisingAutoencoder {
-        "nvis" : 192,
-        "nhid" : 800,
+        "nvis" : 432,
+        "nhid" : 1600,
         "irange" : 0.05,
         "tied_weights": True,
         "corruptor": !obj:pylearn2.corruption.BinomialCorruptor {
@@ -33,6 +33,6 @@
             "max_epochs": 40,
         },
     },
-    "save_path": "./dae_cifar_8x8_zca_sigm_1e-2.pkl",
+    "save_path": "./dae_cifar_12x12_std_zca_sigm_1e-3.pkl",
     save_freq: 1
 }

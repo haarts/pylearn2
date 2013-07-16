@@ -12,14 +12,14 @@
             ]
         }
     },
-    "model": !obj:pylearn2.models.autoencoder.DenoisingAutoencoder {
+    "model": !obj:pylearn2.models.autoencoder.HigherOrderContractiveAutoencoder {
         "nvis" : 192,
         "nhid" : 800,
         "irange" : 0.05,
-        "tied_weights": True,
         "corruptor": !obj:pylearn2.corruption.BinomialCorruptor {
             "corruption_level": 0.5,
         },
+        "num_corruptions": 5,
         "act_enc": "sigmoid",
         "act_dec": null,    # Linear activation on the decoder side.
     },
@@ -28,11 +28,17 @@
         "batch_size" : 10,
         "monitoring_batches" : 5,
         "monitoring_dataset" : *dataset,
-        "cost" : !obj:pylearn2.costs.autoencoder.MeanSquaredReconstructionError {},
+        "cost" : !obj:pylearn2.costs.cost.SumOfCosts { costs: [
+                  !obj:pylearn2.costs.autoencoder.MeanBinaryCrossEntropy {},
+                  !obj:pylearn2.costs.cost.ScaledCost {
+                    cost: !obj:pylearn2.costs.cost.MethodCost { method: contraction_penalty }, scaling: 0.5 },
+                  !obj:pylearn2.costs.cost.ScaledCost {
+                    cost: !obj:pylearn2.costs.cost.MethodCost { method: higher_order_penalty}, scaling: 0.5 }
+                ]},
         "termination_criterion" : !obj:pylearn2.training_algorithms.sgd.EpochCounter {
-            "max_epochs": 40,
+            "max_epochs": 20,
         },
     },
-    "save_path": "./dae_cifar_8x8_zca_sigm_1e-2.pkl",
-    save_freq: 1
+    "save_path": "./hcae_cifar_8x8_std_zca_1e-3.pkl",
+    "save_freq": 1
 }
