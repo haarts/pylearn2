@@ -1,6 +1,7 @@
 !obj:pylearn2.train.Train {
     "dataset": !obj:pylearn2.datasets.mnist.MNIST &dataset {
         "which_set" : 'train',
+        fit_preprocessor: True,
         preprocessor: !obj:pylearn2.datasets.preprocessing.Pipeline {
           items: [
             #!obj:pylearn2.datasets.preprocessing.ExtractPatches {
@@ -13,8 +14,8 @@
         }
     },
     "model": !obj:pylearn2.models.autoencoder.DenoisingAutoencoder {
-        "nvis" : 64,
-        "nhid" : 200,
+        "nvis" : 784,
+        "nhid" : 1800,
         "tied_weights": True,
         "corruptor": !obj:pylearn2.corruption.BinomialCorruptor {
             "corruption_level": 0.5,
