@@ -1,0 +1,38 @@
+!obj:pylearn2.train.Train {
+    "dataset": !obj:pylearn2.datasets.cifar10.CIFAR10 &dataset {
+        "which_set" : 'train',
+        preprocessor: !obj:pylearn2.datasets.preprocessing.Pipeline {
+          items: [
+            !obj:pylearn2.datasets.preprocessing.ExtractPatches {
+              patch_shape: [8,8],
+              num_patches: 100000
+            },
+            !obj:pylearn2.datasets.preprocessing.Standardize { },
+            !obj:pylearn2.datasets.preprocessing.ZCA { }
+            ]
+        }
+    },
+    "model": !obj:pylearn2.models.autoencoder.DenoisingAutoencoder {
+        "nvis" : 192,
+        "nhid" : 800,
+        "irange" : 0.01,
+        "tied_weights": True,
+        "corruptor": !obj:pylearn2.corruption.BinomialCorruptor {
+            "corruption_level": 0.3,
+        },
+        "act_enc": "sigmoid",
+        "act_dec": null,    # Linear activation on the decoder side.
+    },
+    "algorithm": !obj:pylearn2.training_algorithms.sgd.SGD {
+        "learning_rate" : 1e-1,
+        "batch_size" : 5,
+        "monitoring_batches" : 5,
+        "monitoring_dataset" : *dataset,
+        "cost" : !obj:pylearn2.costs.autoencoder.MeanSquaredReconstructionError {},
+        "termination_criterion" : !obj:pylearn2.training_algorithms.sgd.EpochCounter {
+            "max_epochs": 40,
+        },
+    },
+    "save_path": "./dae_cifar_8x8_zca_sigm_1e-1.pkl",
+    save_freq: 1
+}
